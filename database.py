@@ -30,4 +30,6 @@ class User(Base):
     pin_hash = Column(String(255))
 
     def verify_pin(self, pin):
-        return bcrypt.checkpw(pin.encode('utf-8'), self.pin_hash.encode('utf-8'))
+        account = session.query(Account).filter_by(user_id=self.user_id).first()
+        user = session.query(User).filter_by(user_id=account.user_id).first()
+        return bcrypt.checkpw(pin.encode('utf-8'), user.pin_hash.encode('utf-8'))
