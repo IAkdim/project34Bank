@@ -1,0 +1,33 @@
+from sqlalchemy import create_engine, Column, Integer, String
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
+import bcrypt
+
+db_url = 'mysql+mysqlconnector://root:@localhost/bank'
+engine = create_engine(db_url)
+Base = declarative_base()
+
+# Create session
+Session = sessionmaker(bind=engine)
+session = Session()
+
+
+class Account(Base):
+    __tablename__ = 'accounts'
+
+    account_id = Column(Integer, primary_key=True)
+    user_id = Column(Integer)
+    iban = Column(String(16))
+    balance = Column(Integer)
+    status = Column(Integer)
+    attempts = Column(Integer)
+
+
+class User(Base):
+    __tablename__ = 'users'
+
+    user_id = Column(Integer, primary_key=True)
+    pin_hash = Column(String(255))
+
+    def verify_pin(self, pin):
+        return bcrypt.checkpw(pin.encode('utf-8'), self.pin_hash.encode('utf-8'))
