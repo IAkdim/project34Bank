@@ -24,19 +24,26 @@ class MyHandler(BaseHTTPRequestHandler):
             if account:
                 user = session.query(User).filter_by(user_id=account.user_id).first()
 
-                if user and user.verify_pin(pin):
-                    balance = account.balance
-                    response = {'status': 'success', 'balance': balance}
+                if user:
+                    if user.verify_pin(pin):
+                        balance = account.balance
+                        response = {'status': 'success', 'balance': balance}
+                        self.send_response(200)
+                    else:
+                        response = {'status': 'error', 'message': 'Invalid PIN for the account.'}
+                        self.send_response(400)
                 else:
-                    response = {'status': 'error', 'message': 'Invalid user ID or PIN.'}
+                    response = {'status': 'error', 'message': 'Invalid user associated with the account.'}
+                    self.send_response(400)
             else:
                 response = {'status': 'error', 'message': 'Invalid account number.'}
+                self.send_response(400)
 
         except Exception as e:
             print(f"Database Error: {str(e)}")
             response = {'status': 'error', 'message': 'An error occurred while accessing the database.'}
+            self.send_response(500)
 
-        self.send_response(200)
         self.send_header('Content-type', 'application/json')
         self.end_headers()
         self.wfile.write(json.dumps(response).encode('utf-8'))
