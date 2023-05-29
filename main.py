@@ -5,52 +5,52 @@ app = Flask(__name__)
 @app.route('/api/balance', methods=['POST'])
 def balance():
     data = request.get_json()
-    iban = data.get('acctNo')
-    pin = data.get('pin')
+    iban: str = data.get('acctNo')
+    pin: str = data.get('pin')
 
     account = session.query(Account).filter_by(iban=iban).first()
     if not account:
-        return jsonify({'id': 400, 'message': 'Invalid account number.'}), 400
+        return jsonify({'status': 400, 'message': 'Invalid account number.'})
 
-    if account.id == 1:
-        return jsonify({'id': 403, 'message': 'This account is blocked.'}), 403
+    if account.status == 1:
+        return jsonify({'status': 403, 'message': 'This account is blocked.'})
 
-    user = session.query(User).filter_by(user_id=account.user_id).first()
+    user = session.query(User).filter_by(user_status=account.user_id).first()
     if not user or not user.verify_pin(pin):
         account.increment_attempts()
-        return jsonify({'id': 400, 'message': 'Invalid user ID or PIN.'}), 400
+        return jsonify({'status': 401, 'message': 'Invalid user status or PIN.'})
 
     account.reset_attempts()
     balance = account.balance
-    return jsonify({'id': 200, 'balance': balance}), 200
+    return jsonify({'status': 200, 'balance': balance})
 
 @app.route('/api/withdraw', methods=['POST'])
 def withdraw():
     data = request.get_json()
-    iban = data.get('acctNo')
-    pin = data.get('pin')
-    amount = data.get('amount')
+    iban: str = data.get('acctNo')
+    pin: str = data.get('pin')
+    amount: int = data.get('amount')
 
     account = session.query(Account).filter_by(iban=iban).first()
     if not account:
-        return jsonify({'id': 400, 'message': 'Invalid account number.'}), 400
+        return jsonify({'status': 400, 'message': 'Invalid account number.'})
 
-    if account.id == 1:
-        return jsonify({'id': 403, 'message': 'This account is blocked.'}), 403
+    if account.status == 1:
+        return jsonify({'status': 403, 'message': 'This account is blocked.'})
 
-    user = session.query(User).filter_by(user_id=account.user_id).first()
+    user = session.query(User).filter_by(user_status=account.user_id).first()
     if not user or not user.verify_pin(pin):
         account.increment_attempts()
-        return jsonify({'id': 400, 'message': 'Invalid user ID or PIN.'}), 400
+        return jsonify({'status': 401, 'message': 'Invalid user status or PIN.'})
 
     if account.balance < amount:
         account.reset_attempts()
-        return jsonify({'id': 400, 'message': 'Insufficient balance.'}), 400
+        return jsonify({'status': 402, 'message': 'Insufficient balance.'})
 
     account.balance -= amount
     session.commit()
     account.reset_attempts()
-    return jsonify({'id': 200, 'message': 'Withdrawal successful.'}), 200
+    return jsonify({'status': 200, 'message': 'Withdrawal successful.'})
 
 
 if __name__ == '__main__':
