@@ -1,0 +1,36 @@
+#stage {
+    position: absolute;
+    top: 200px;
+    left: 50%;
+    transform: translate(-50%);
+    height: 300px;
+    width: 800px;
+    background-color: white;
+    border-radius: 20px;
+}
+
+.pin-input {
+    position: absolute;
+    width: 760px; /* Adjust the width as desired */
+    height: 100px; /* Adjust the height as desired */
+    font-size: 144px;
+    left: 20px;
+    top: 20px;
+
+    background-color: #000000;
+    color: white;
+    outline: none;
+    box-shadow: none;
+    text-align: center;
+    border-radius: 40px; /* Adjust the border radius as desired */
+    caret-color: transparent; /* Remove the blinking caret effect */
+  }
+
+#pin-text.text {
+    position: absolute;
+    white-space: nowrap;
+    top: 200px;
+    left: 50%;
+    transform: translate(-50%);
+    font-size: 40px;
+}

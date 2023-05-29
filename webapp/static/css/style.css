@@ -1,0 +1,63 @@
+:not(Selector) {
+    cursor: none;
+
+}
+body {
+    background-color: rgb(48, 48, 48);
+    margin: 0px;
+    padding: 0px;
+}
+
+#logo {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    width: 280px;
+}
+
+#bar {
+    position: fixed;
+    background-color: white;
+    border-radius: 20px;
+    width: 540px;
+    height: 110px;
+    top: 20px;
+    left: 474px;
+    display: flex;
+    justify-content: space-around;
+}
+  
+.language-button {
+    border: none;
+    width: 120px;
+    height: 90px;
+    margin-top: 10px;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.language-button:active {
+    transform: scale(0.95);
+}
+
+#flag-netherlands.language-button {
+    background-image: url('/static/img/languages/Netherlands (NL).svg');
+}
+
+#flag-uk.language-button {
+    background-image: url('/static/img/languages/United Kingdom (GB).svg');
+}
+
+#flag-germany.language-button {
+    background-image: url('/static/img/languages/Germany (DE).svg');
+}
+
+#flag-france.language-button {
+    background-image: url('/static/img/languages/France (FR).svg');
+}
+
+.text {
+    color: black;
+    font-family: Helvetica, Sans-Serif;
+    margin: 2px;
+}

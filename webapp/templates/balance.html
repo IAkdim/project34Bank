@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/balance.css') }}">
+</head>
+<body>
+    <img id="logo" src="{{ url_for('static', filename='img/logo/logoBAHE.svg') }}">
+
+    <div id="stage">
+        <div id="balance">{{ balance }}</div>
+        <h1 id="balance-text" class="text"></h1>
+    </div>
+    <a href="/choiceMenu" id="return" class="text"></a>
+    <div id="bar">
+        <button id="flag-france" class="language-button" onclick="setLanguage('fr');"></button>
+        <button id="flag-germany" class="language-button" onclick="setLanguage('de');"></button>
+        <button id="flag-netherlands" class="language-button" onclick="setLanguage('nl');"></button>
+        <button id="flag-uk" class="language-button" onclick="setLanguage('en');"></button>
+    </div>
+    
+    <script src="{{ url_for('static', filename='js/index.js') }}"></script>    
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/customChoice.css') }}">
+    <script>
+        window.addEventListener('DOMContentLoaded', (event) => {
+          const inputElement = document.getElementById('money-input');
+          inputElement.focus();
+        });
+      </script>
+</head>
+<body>
+    <img id="logo" src="{{ url_for('static', filename='img/logo/logoBAHE.svg') }}">
+
+    <div id="stage">
+        <form id="moneyForm" action="/customChoice" method="post">
+            <input type="number" id="money-input" name="money-input" min="10" max="200" step="10" autofocus readonly>
+        </form>
+    </div>
+    <div id="nav">
+        <button id="increase" class="text" onclick="increaseAmount(10)"></button>
+        <button id="decrease" class="text" onclick="decreaseAmount(10)"></button>
+        <a href="/moneyChoice" id="return" class="text"></a>
+    </div>
+    <div id="bar">
+        <button id="flag-france" class="language-button" onclick="setLanguage('fr');"></button>
+        <button id="flag-germany" class="language-button" onclick="setLanguage('de');"></button>
+        <button id="flag-netherlands" class="language-button" onclick="setLanguage('nl');"></button>
+        <button id="flag-uk" class="language-button" onclick="setLanguage('en');"></button>
+    </div>
+    
+    <script src="{{ url_for('static', filename='js/index.js') }}"></script>
+    <script>
+        function increaseAmount(step) {
+            var input = document.getElementById("money-input");
+            var currentValue = Number(input.value);
+            var newValue = currentValue + step;
+            if (newValue <= 200) {
+                input.value = newValue;
+            }
+        }
+        
+        function decreaseAmount(step) {
+            var input = document.getElementById("money-input");
+            var currentValue = Number(input.value);
+            var newValue = currentValue - step;
+            if (newValue >= 10) {
+                input.value = newValue;
+            }
+        }
+        
+        document.addEventListener('keydown', function(event) {
+            if (event.key === '*') {
+                event.preventDefault(); // Prevent default behavior of the "*" key
+                increaseAmount(10);
+            } else if (event.key === '#') {
+                event.preventDefault(); // Prevent default behavior of the "#" key
+                decreaseAmount(10);
+            }
+        });
+    </script>
+</body>
+</html>
