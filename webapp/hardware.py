@@ -1,4 +1,4 @@
-from serial import Serial
+import serial
 from time import sleep
 
 class Money_Dispenser:
@@ -51,7 +51,7 @@ class Money_Dispenser:
         Returns:
             bool: True if the money was successfully dispensed, False otherwise.
         """
-        ser = Serial(serial_port, 9600)
+        ser = serial.Serial(serial_port, 9600)
         sleep(2)
         try:
             data_string = '{} {} {}'.format(amounts.get('tensToGive', 0), amounts.get('twentiesToGive', 0),
@@ -127,7 +127,7 @@ def process_RFID(serial_port: str) -> str:
     Returns:
         str: The RFID data read from the serial port.
     """
-    rfid_serial = Serial(serial_port, 9600)
+    rfid_serial = serial.Serial(serial_port, 9600)
     sleep(1)
     rfid_data = ""
     while rfid_data == "":
