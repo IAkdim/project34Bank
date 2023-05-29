@@ -52,6 +52,5 @@ def withdraw():
     account.reset_attempts()
     return jsonify({'status': 200, 'message': 'Withdrawal successful.'})
 
-
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080)
