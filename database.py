@@ -3,7 +3,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import bcrypt
 
-db_url = 'mysql+mysqlconnector://root:@localhost/bank'
+db_url = 'mysql+mysqlconnector://root:@localhost/Bank'
 engine = create_engine(db_url)
 Base = declarative_base()
 
