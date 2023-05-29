@@ -15,6 +15,7 @@ def balance():
                 return jsonify({'status': 403, 'message': 'This account is blocked.'})
             user = session.query(User).filter_by(user_id=account.user_id).first()
             if user and user.verify_pin(pin):
+                account.reset_attempts()
                 balance = account.balance
                 response = {'status': 200, 'balance': balance}
             else:
@@ -30,9 +31,9 @@ def balance():
 @app.route('/api/withdraw', methods=['POST'])
 def withdraw():
     data: dict = request.get_json()
-    iban = data['body'].get('acctNo')
-    pin = data['body'].get('pin')
-    amount = data['body'].get('amount')
+    iban = data.get('acctNo')
+    pin = data.get('pin')
+    amount = data.get('amount')
 
     try:
         account = session.query(Account).filter_by(iban=iban).first()
@@ -47,6 +48,7 @@ def withdraw():
                     response = {'status': 200, 'message': 'Withdrawal successful.'}
                 else:
                     response = {'status': 400, 'message': 'Insufficient balance.'}
+                account.reset_attempts()
             else:
                 response = {'status': 400, 'message': 'Invalid user ID or PIN.'}
                 account.increment_attempts()

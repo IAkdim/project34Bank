@@ -36,3 +36,7 @@ class Account(Base):
         if self.attempts >= 3:
             self.status = 1
         session.commit()
+
+    def reset_attempts(self):
+        self.attempts = 0
+        session.commit()
