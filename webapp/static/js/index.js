@@ -17,7 +17,8 @@ languages = {
         "increase" : "Increase *",
         "decrease" : "Decrease #",
         "wrong-pin-text" : "Wrong PIN, try again",
-        "exceeded-text" : "You have exceeded your accounts balance"
+        "exceeded-text" : "You have exceeded your accounts balance",
+        "error-text" : "An error has occured, check your credentials"
     },
     'fr': {
         "rfid-text": "Passez votre carte pour commencer!",
@@ -37,7 +38,8 @@ languages = {
         "increase" : "Augmenter *",
         "decrease" : "Diminuer #",
         "wrong-pin-text": "Mauvais code PIN, réessayez",
-        "exceeded-text": "Vous avez dépassé le solde de votre compte."
+        "exceeded-text": "Vous avez dépassé le solde de votre compte.",
+        "error-text": "Une erreur s'est produite, vérifiez vos informations d'identification"
     },
     'de': {
         "rfid-text": "Legen Sie Ihre Karte ein, um zu beginnen!",
@@ -57,7 +59,8 @@ languages = {
         "increase" : "Erhöhen *",
         "decrease" : "Verringern #",
         "wrong-pin-text": "Falsche PIN, bitte erneut versuchen",
-        "exceeded-text": "Sie haben Ihr Kontoguthaben überschritten."
+        "exceeded-text": "Sie haben Ihr Kontoguthaben überschritten.",
+        "error-text": "Es ist ein Fehler aufgetreten, überprüfen Sie Ihre Anmeldedaten"
     },
     'nl': {
         "rfid-text": "Scan uw kaart om te beginnen!",
@@ -77,7 +80,8 @@ languages = {
         "increase" : "Verhogen *",
         "decrease" : "Verlagen #",
         "wrong-pin-text": "Verkeerde PIN, probeer opnieuw",
-        "exceeded-text": "U heeft uw accountsaldo overschreden."
+        "exceeded-text": "U heeft uw accountsaldo overschreden.",
+        "error-text": "Er is een fout opgetreden, controleer uw gegevens"
     }
 }
 

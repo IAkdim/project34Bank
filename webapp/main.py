@@ -21,8 +21,7 @@ def index():
 
 @app.route("/rfid")
 def rfid():
-    # iban: str = process_RFID("COM9")
-    iban = "CHBAHE312843209"
+    iban: str = process_RFID("COM9")
     return redirect("/pincode?iban=" + iban)
 
 
@@ -34,20 +33,24 @@ def pincode():
     if request.method == "POST":
         pin = request.form.get("pinInput")
         session['data']['pin'] = pin
-
         response = post_balance(session['data'])
+        json_data = response.json()
         if response.status_code == 200:
-            json_data = response.json()
-            if json_data.get('status') == 200:
+            if json_data.get('status') == 200 or json_data.get('acctNo') != None :
                 session['validated'] = True
                 session['balance'] = json_data.get('balance')
                 return redirect("/choiceMenu")
             elif json_data.get('status') == 403:
                 return redirect("/blocked")
             elif json_data.get('status') == 401:
-                return redirect("/wrongPin")
+                return redirect("/wrongPin")           
+        return redirect("/error")
             
     return render_template("pincode.html", iban=iban)
+
+@app.route("/error")
+def error():
+    return render_template("error.html")
 
 
 @app.route("/blocked")
@@ -60,8 +63,6 @@ def wrong_pin():
 
 @app.route("/choiceMenu")
 def choice_menu():
-    if not session['validated']:
-        return redirect("/")
     return render_template("choiceMenu.html")
 
 @app.route("/balance")
@@ -89,14 +90,14 @@ def wait():
 @app.route("/dispense")
 def dispense():
     amount: int = session['data']['amount']
-    print(amount)
     billsToDispense: dict = dispenser.get_denominations(amount)
     if billsToDispense != None:
         sleep(1)
         response = post_withdraw(session['data'])
-        if response.status_code == 200:
-            json_data = response.json()
-            if json_data.get('status') == 200:
+        json_data = response.json()
+        if response.status_code == 200 or json_data.get('acctNo') != "" :
+            print("here")
+            if json_data.get('status') == 200 or json_data.get('success') == True:
                 return redirect('/bon')
             elif json_data.get('status') == 401:
                 return redirect("/wrongPin")
@@ -104,9 +105,7 @@ def dispense():
                 return redirect("/exceededBalance")
             elif json_data.get('status') == 403:
                 return redirect("/blocked")
-            
-        else:
-            return redirect("/error")
+        return redirect("/error")
     else:
         return redirect('/inventoryError')
     

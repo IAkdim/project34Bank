@@ -1,5 +1,6 @@
-import serial
+from serial import Serial
 from time import sleep
+import re
 
 class Money_Dispenser:
     """A class representing a money dispenser."""
@@ -51,7 +52,7 @@ class Money_Dispenser:
         Returns:
             bool: True if the money was successfully dispensed, False otherwise.
         """
-        ser = serial.Serial(serial_port, 9600)
+        ser = Serial(serial_port, 9600)
         sleep(2)
         try:
             data_string = '{} {} {}'.format(amounts.get('tensToGive', 0), amounts.get('twentiesToGive', 0),
@@ -117,6 +118,25 @@ class Money_Dispenser:
         elif denomination == 10:
             self.tens_inventory -= 1
 
+# def process_RFID(serial_port: str) -> str:
+#     """
+#     Reads RFID data from a specified serial port and returns the data as a string.
+    
+#     Args:
+#         serial_port (str): The name or address of the serial port to communicate with the RFID reader.
+        
+#     Returns:
+#         str: The RFID data read from the serial port.
+#     """
+#     rfid_serial = Serial(serial_port, 9600)
+#     if not rfid_serial.isOpen():
+#         rfid_serial.open()
+#     sleep(1)
+#     rfid_data = ""
+#     while rfid_data == "":
+#         rfid_data = rfid_serial.readline().decode().strip()
+#     return rfid_data
+
 def process_RFID(serial_port: str) -> str:
     """
     Reads RFID data from a specified serial port and returns the data as a string.
@@ -127,9 +147,22 @@ def process_RFID(serial_port: str) -> str:
     Returns:
         str: The RFID data read from the serial port.
     """
-    rfid_serial = serial.Serial(serial_port, 9600)
+    rfid_serial = Serial(serial_port, 9600)
+    if not rfid_serial.isOpen():
+        rfid_serial.open()
     sleep(1)
     rfid_data = ""
     while rfid_data == "":
-        rfid_data = rfid_serial.readline().decode().strip()
-    return rfid_data
+        try:
+            rfid_data = rfid_serial.readline().decode('utf-8', errors='ignore').strip()
+        except UnicodeDecodeError:
+            continue  # Ignore this line and continue with the next
+        
+    # Find matches for the regex pattern
+    match = re.search(r"[A-Z]{6}\d{3,10}", rfid_data)
+    if match:
+        return match.group()  # Return the matched string
+    else:
+        return "No match found"  # If no match, return a string indicating that
+
+
