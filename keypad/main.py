@@ -2,8 +2,8 @@ import serial
 import time
 from pynput.keyboard import Controller, Key
 
-def process_serial_data(serial_port, baud_rate=9600):
-    ser = serial.Serial(serial_port, baud_rate)
+def process_serial_data(serial_port):
+    ser = serial.Serial(serial_port, 9600)
     keyboard = Controller()
 
     while True:
