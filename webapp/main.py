@@ -21,20 +21,21 @@ def index():
 
 @app.route("/rfid")
 def rfid():
-    iban: str = process_RFID("COM9")
+    iban: str = process_RFID("COM9") #insert correct port here
+    if iban == "No match found":
+        return redirect("/error")
     return redirect("/pincode?iban=" + iban)
 
-
+# 'status' not available to external costumers, /error is used as a catch-all redirection message for them 
 @app.route("/pincode", methods=["GET", "POST"])
 def pincode():
     iban = request.args.get("iban")
     session['data']['acctNo'] = iban    
-
+    response = post_balance(session['data'])
+    json_data = response.json()
     if request.method == "POST":
         pin = request.form.get("pinInput")
         session['data']['pin'] = pin
-        response = post_balance(session['data'])
-        json_data = response.json()
         if response.status_code == 200:
             if json_data.get('status') == 200 or json_data.get('acctNo') != None :
                 session['validated'] = True
@@ -45,13 +46,11 @@ def pincode():
             elif json_data.get('status') == 401:
                 return redirect("/wrongPin")           
         return redirect("/error")
-            
     return render_template("pincode.html", iban=iban)
 
 @app.route("/error")
 def error():
     return render_template("error.html")
-
 
 @app.route("/blocked")
 def blocked():
@@ -63,19 +62,27 @@ def wrong_pin():
 
 @app.route("/choiceMenu")
 def choice_menu():
+    if session['validated'] == False:
+        return redirect("/")
     return render_template("choiceMenu.html")
 
 @app.route("/balance")
 def balance():
+    if session['validated'] == False:
+        return redirect("/")
     balance = session['balance']
     return render_template("balance.html", balance=str(balance))
 
 @app.route("/moneyChoice")
 def money_choice():
+    if session['validated'] == False:
+        return redirect("/")
     return render_template("moneyChoice.html")
 
 @app.route("/customChoice", methods=["GET", "POST"])
 def custom_choice():
+    if session['validated'] == False:
+        return redirect("/")
     if request.method == "POST":
         amount = int(request.form.get("money-input"))
         return redirect(f"/wait?amount={amount}")
@@ -83,12 +90,16 @@ def custom_choice():
 
 @app.route("/wait")
 def wait():
+    if session['validated'] == False:
+        return redirect("/")
     session.modified = True
     session['data']['amount'] = int(request.args.get("amount"))
     return render_template("wait.html")
 
 @app.route("/dispense")
 def dispense():
+    if session['validated'] == False:
+        return redirect("/")
     amount: int = session['data']['amount']
     billsToDispense: dict = dispenser.get_denominations(amount)
     if billsToDispense != None:
@@ -109,12 +120,18 @@ def dispense():
     else:
         return redirect('/inventoryError')
     
+@app.route("/inventoryError")
+def inventory_error():
+    return render_template("inventoryError.html")
+    
 @app.route("/exceededBalance")
 def exceeded_balance():
     return render_template("exceededBalance.html")
 
 @app.route("/bon", methods=["GET", "POST"])
 def bon():
+    if session['validated'] == False:
+        return redirect("/")
     language = request.cookies.get('language')
     transaction = Transaction(session['data']['amount'], session['data']['acctNo'], language)
     if request.method == "POST":
@@ -133,4 +150,4 @@ def end():
     return render_template("end.html")
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8080)
+    app.run(host="127.0.0.1", port=5000)

@@ -49,7 +49,7 @@ class TransactionModel(Base):
 class Transaction:
     def __init__(self, amount: int, iban: str, language: str) -> None:
         self.amount = amount
-        self.date = None
+        self.date = datetime.datetime.now()
         self.iban = iban
         self.language = language
 
@@ -57,44 +57,14 @@ class Transaction:
         def print_details():
             receipt_ser = serial.Serial(serial_port, 19200, timeout=1)
             text_size_cmd = b'\x1B\x21\x08'
-            
-            translations = {
-                'english': {
-                    'date': 'Date',
-                    'iban': 'IBAN',
-                    'amount': 'Withdrawn amount',
-                    'thanks': 'Thank you for using our ATM!'
-                },
-                'french': {
-                    'date': 'Date',
-                    'iban': 'IBAN',
-                    'amount': 'Montant retiré',
-                    'thanks': 'Merci d\'utiliser notre ATM!'
-                },
-                'german': {
-                    'date': 'Datum',
-                    'iban': 'IBAN',
-                    'amount': 'Abgehobener Betrag',
-                    'thanks': 'Danke für die Benutzung unseres Geldautomaten!'
-                },
-                'dutch': {
-                    'date': 'Datum',
-                    'iban': 'IBAN',
-                    'amount': 'Opnamebedrag',
-                    'thanks': 'Bedankt voor het gebruiken van onze geldautomaat!'
-                },
-            }
-            
-            lang = translations.get(self.language, translations['english'])
-
             header_text = (
                 f'\n{"-" * 32}\n'
-                f'{" " * 6}{"Banc Helvetique".center(20)}\n'
+                f'{" " * 6}{"Banque Helvetique".center(20)}\n'
                 f'{"-" * 32}\n'
-                f'{lang["date"]:<12}{self.date}\n'
-                f'{lang["iban"]:<6}{self.iban}\n'
-                f'{lang["amount"]:<12}CHF {self.amount}\n'
-                f'{lang["thanks"]:^32}\n'
+                f'{"Date":<12}{self.date}\n'
+                f'{"IBAN":<6}{self.iban}\n'
+                f'{"Amount":<12}CHF {self.amount}\n'
+                f'{"Thank you for using our ATM!":^32}\n'
                 f'{"-" * 32}\n'
             )
             receipt_ser.write(text_size_cmd + header_text.encode('utf-8'))
@@ -108,7 +78,6 @@ class Transaction:
         thread.start()
 
     def record_transaction_to_db(self):
-        self.date = datetime.datetime.now()
         tunnel = get_tunnel()
         engine = create_engine(
             f'mysql+pymysql://{mysql_username}:{mysql_password}@{mysql_host}:{tunnel.local_bind_port}/{database_name}'
